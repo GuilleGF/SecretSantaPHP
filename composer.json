@@ -1,5 +1,28 @@
 {
-    "require": {
-        "ramsey/uuid": "^3.5"
+  "name": "SecretSanta",
+  "description": "Secret Santa game in PHP",
+  "keywords": [
+    "Secret Santa",
+    "Secret",
+    "Santa",
+    "PHP"
+  ],
+  "homepage": "https://github.com/GuilleGF/SecretSantaPHP",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Guillermo Gonzalez",
+      "email": "guillermogf@gmail.com"
     }
+  ],
+  "require": {
+    "ramsey/uuid": "^3.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "5.5.*"
+  },
+  "autoload": {
+    "psr-4": {"SecretSanta\\": "src/"}
+  }
 }
