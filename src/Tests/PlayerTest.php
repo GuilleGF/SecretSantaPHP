@@ -27,6 +27,7 @@ class PlayerTest extends PHPUnit_Framework_TestCase
     {
         $player = Player::create('name', 'email@email.com');
 
+        $this->assertTrue($player->id() != '');
         $this->assertSame('name', $player->name());
         $this->assertSame('email@email.com', $player->email());
     }
