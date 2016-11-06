@@ -24,5 +24,8 @@
   },
   "autoload": {
     "psr-4": {"SecretSanta\\": "src/"}
+  },
+  "config": {
+    "bin-dir": "bin/"
   }
 }
