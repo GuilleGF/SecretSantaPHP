@@ -62,9 +62,11 @@ class SecretSanta
         $result = [];
         if ($this->isValidCombination()) {
             foreach ($this->combination as $playerId => $secretPlayerId) {
+                $player = $this->players->player($playerId);
                 $result[] = [
-                    'player' => $this->players->player($playerId),
-                    'secretPlayer' => $this->players->player($secretPlayerId)
+                    'name' => $player->name(),
+                    'email' => $player->email(),
+                    'secretSanta' => $this->players->player($secretPlayerId)->name()
                 ];
             }
         }
@@ -87,10 +89,11 @@ class SecretSanta
             shuffle($players);
             shuffle($secretPlayers);
             foreach ($players as $player) {
-                foreach ($secretPlayers as $secretPlayer) {
+                foreach ($secretPlayers as $key => $secretPlayer) {
                     if ($player->id() != $secretPlayer->id() && !$this->players->areExclude($player, $secretPlayer)) {
                         if (!in_array($secretPlayer->id(), $this->combination)) {
-                            $combination[$player->id()] = $secretPlayer->id();
+                            $this->combination[$player->id()] = $secretPlayer->id();
+                            unset ($secretPlayers[$key]);
                             break;
                         }
                     }
