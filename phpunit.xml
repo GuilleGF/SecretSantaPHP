@@ -18,15 +18,16 @@
 
     <testsuites>
         <testsuite name="Secret Santa Test Suite">
-            <directory>./src/SecretSanta/Tests/</directory>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>./src/SecretSanta/</directory>
+            <directory>./src</directory>
             <exclude>
-                <directory>./src/SecretSanta/*/Tests</directory>
+                <directory suffix=".php">./tests</directory>
+                <directory>./vendor</directory>
             </exclude>
         </whitelist>
     </filter>
