@@ -26,10 +26,13 @@ class SecretSanta
     /**
      * @param string $name
      * @param string $email
+     * @return SecretSanta
      */
     public function addPlayer($name, $email)
     {
         $this->players->addPlayer(Player::create($name, $email));
+
+        return $this;
     }
 
     /**
@@ -37,6 +40,7 @@ class SecretSanta
      * @param string $email
      * @param string $coupleName
      * @param string $coupleEmail
+     * @return SecretSanta
      */
     public function addCouple($name, $email, $coupleName, $coupleEmail)
     {
@@ -44,6 +48,8 @@ class SecretSanta
             Player::create($name, $email),
             Player::create($coupleName, $coupleEmail)
         );
+
+        return $this;
     }
 
     /**
