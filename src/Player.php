@@ -17,6 +17,8 @@ class Player
     private $name;
     /** @var string */
     private $email;
+    /** @var Player */
+    private $secretSanta;
 
     /**
      * Player constructor.
@@ -66,10 +68,35 @@ class Player
     {
         return $this->email;
     }
+    
+    /**
+     * @throws PlayerException
+     * @return Player
+     */
+    public function secretSanta()
+    {
+        if (is_null($this->secretSanta)) {
+            throw new PlayerException("Secret Santa is not yet generated");
+        }
+        
+        return $this->secretSanta;
+    }
+    
+    /**
+     * @param Player $secretSanta
+     * @return Player
+     */
+    public function setSecretSanta(Player $secretSanta)
+    {
+        $this->secretSanta = $secretSanta;
+        
+        return $this;
+    }
 
     /**
      * @param string $name
      * @throws PlayerException
+     * @return Player
      */
     private function setName($name)
     {
@@ -81,11 +108,14 @@ class Player
         }
 
         $this->name = $name;
+        
+        return $this;
     }
 
     /**
      * @param string $email
      * @throws PlayerException
+     * @return Player
      */
     private function setEmail($email)
     {
@@ -94,10 +124,17 @@ class Player
         }
 
         $this->email = $email;
+        
+        return $this;
     }
 
+    /**
+     * @return Player
+     */
     private function generateId()
     {
         $this->id = Uuid::uuid5(Uuid::NAMESPACE_DNS, $this->email)->toString();
+        
+        return $this;
     }
 }
