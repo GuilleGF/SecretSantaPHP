@@ -19,7 +19,7 @@ Secret Santa game in PHP
 ### Composer (Recommended)
 
 [Composer](https://getcomposer.org/) is a widely used dependency manager for PHP
-packages. This reCAPTCHA client is available on Packagist as
+packages. Is available on Packagist as
 [`guillegf/secret-santa`](https://packagist.org/packages/guillegf/secret-santa) and can be
 installed either by running the `composer require` command or adding the library
 to your `composer.json`. To enable Composer for you project, refer to the
@@ -53,3 +53,7 @@ foreach ($secretSantaPlayers as $player) {
     echo ("{$player['name']} {$player['email']}:  {$player['secretSanta']}\n");
 }
 ```
+
+## License
+
+The SecretSanta is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT)  
