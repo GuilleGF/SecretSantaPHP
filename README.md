@@ -9,7 +9,7 @@
 [![License](https://poser.pugx.org/guillegf/secret-santa/license)](https://packagist.org/packages/guillegf/secret-santa)
 
 * Repository: https://github.com/GuilleGF/SecretSantaPHP
-* Version: 1.1.0
+* Version: 1.1.1
 * License: MIT, see [LICENSE](LICENSE)
 
 ## Description
