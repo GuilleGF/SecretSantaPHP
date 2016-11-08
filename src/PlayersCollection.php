@@ -49,6 +49,14 @@ class PlayersCollection implements \Iterator, \Countable
     }
 
     /**
+     * @return Player[]
+     */
+    public function shufflePlayers()
+    {
+        return $this->shuffleAssoc($this->players);
+    }
+
+    /**
      * @param string $id
      * @return Player
      * @throws PlayersCollectionException
@@ -115,6 +123,39 @@ class PlayersCollection implements \Iterator, \Countable
         }
 
         return false;
+    }
+
+    /**
+     * @param array $list
+     * @return array
+     */
+    private function shuffleAssoc($list)
+    {
+        if (!is_array($list)) return $list;
+
+        $keys = $this->forceShuffle(array_keys($list));
+        $random = [];
+        foreach ($keys as $key) {
+            $random[$key] = $list[$key];
+        }
+
+        return $random;
+    }
+
+    /**
+     * @param array $list
+     * @return array
+     */
+    private function forceShuffle($list)
+    {
+        if (!is_array($list) || count($list) < 2) return $list;
+
+        $shuffleList = $list;
+        while ($shuffleList == $list) {
+            shuffle($shuffleList);
+        }
+
+        return $shuffleList;
     }
 
     /**

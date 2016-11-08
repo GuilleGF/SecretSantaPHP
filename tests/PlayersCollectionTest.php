@@ -23,6 +23,18 @@ class PlayersCollectionTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \SecretSanta\Exceptions\PlayersCollectionException
      */
+    public function testGetUnKnowPlayer()
+    {
+        $expectedPlayer = Player::create('name', 'email@email.com');
+        $playersCollection = new PlayersCollection();
+        $playersCollection->addPlayer($expectedPlayer);
+
+        $playersCollection->player('error-id');
+    }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\PlayersCollectionException
+     */
     public function testDuplicatePlayer()
     {
         $player = Player::create('name', 'email@email.com');
@@ -45,5 +57,32 @@ class PlayersCollectionTest extends PHPUnit_Framework_TestCase
         $this->assertSame(2, count($playersCollection->players()));
         $this->assertSame($expectedPlayer, $player);
         $this->assertSame($expectedCouple, $couple);
+    }
+
+    public function testShufflePlayers()
+    {
+        $expectedPlayer = Player::create('name', 'email@email.com');
+        $expectedCouple = Player::create('nameCouple', 'emailCouple@email.com');
+
+        $playersCollection = new PlayersCollection();
+        $playersCollection->addCouple($expectedPlayer, $expectedCouple);
+
+        $shufflePlayers = $playersCollection->shufflePlayers();
+
+        $this->assertNotEquals(array_keys($playersCollection->players()), array_keys($shufflePlayers));
+    }
+
+    public function testExcludePlayers()
+    {
+        $expectedSinglePlayer = Player::create('nameSingle', 'emailSingle@email.com');
+        $expectedPlayer = Player::create('name', 'email@email.com');
+        $expectedCouple = Player::create('nameCouple', 'emailCouple@email.com');
+
+        $playersCollection = new PlayersCollection();
+        $playersCollection->addCouple($expectedPlayer, $expectedCouple);
+
+        $this->assertTrue($playersCollection->areExclude($expectedPlayer, $expectedCouple));
+        $this->assertFalse($playersCollection->areExclude($expectedSinglePlayer, $expectedPlayer));
+        $this->assertSame(2, $playersCollection->countExcludePlayers());
     }
 }

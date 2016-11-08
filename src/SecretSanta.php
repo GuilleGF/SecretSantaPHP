@@ -53,25 +53,24 @@ class SecretSanta
     }
 
     /**
-     * @return array
+     * @return PlayersCollection
+     * @throws SecretSantaException
      */
     public function play()
     {
-        $this->combinePlayers();
+        try {
+            $this->combinePlayers();
 
-        $result = [];
-        if ($this->isValidCombination()) {
-            foreach ($this->combination as $playerId => $secretPlayerId) {
-                $player = $this->players->player($playerId);
-                $result[] = [
-                    'name' => $player->name(),
-                    'email' => $player->email(),
-                    'secretSanta' => $this->players->player($secretPlayerId)->name()
-                ];
-            }
+            return $this->players;
+        } catch (SecretSantaException $exception) {
+            throw  $exception;
+        } catch (\Exception $exception) {
+            throw new SecretSantaException(
+                'Error during play, impossible to find secret santa, try again',
+                0,
+                $exception
+            );
         }
-
-        return $result;
     }
 
     /**
@@ -79,29 +78,31 @@ class SecretSanta
      */
     private function combinePlayers()
     {
-        $retry = 0;
-        $this->combination = [];
+        if (count($this->players) < 4) {
+            throw new SecretSantaException("Not enough players to play, at least 4 players are required");
+        }
 
-        while (!$this->isValidCombination() && $retry < (count($this->players)*2)) {
-            $retry++;
-            $players = $this->players->players();
-            $secretPlayers = $this->players->players();
-            shuffle($players);
-            shuffle($secretPlayers);
-            foreach ($players as $player) {
-                foreach ($secretPlayers as $key => $secretPlayer) {
+        $retry = count($this->players) + $this->players->countExcludePlayers();
+
+        while (!$this->isValidCombination() && $retry > 0 ) {
+            $this->combination = [];
+            $secretPlayers = $this->players->shufflePlayers();
+            foreach ($this->players as $playerId => $player) {
+                foreach ($secretPlayers as $secretPlayer) {
                     if ($player->id() != $secretPlayer->id() && !$this->players->areExclude($player, $secretPlayer)) {
                         if (!in_array($secretPlayer->id(), $this->combination)) {
+                            $player->setSecretSanta($secretPlayer);
                             $this->combination[$player->id()] = $secretPlayer->id();
-                            unset ($secretPlayers[$key]);
+                            unset ($secretPlayers[$secretPlayer->id()]);
                             break;
                         }
                     }
                 }
             }
+            $retry--;
         }
 
-        if (!$this->isValidCombination()) {
+        if (!$this->isValidCombination() && $retry <= 0) {
             throw new SecretSantaException("Not enough players to play");
         }
     }
