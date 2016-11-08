@@ -1,8 +1,8 @@
 # SecretSantaPHP
 
 [![Build Status](https://travis-ci.org/GuilleGF/SecretSantaPHP.svg?branch=master)](https://travis-ci.org/GuilleGF/SecretSantaPHP)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/GuilleGF/SecretSantaPHP/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/GuilleGF/SecretSantaPHP/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/GuilleGF/SecretSantaPHP/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/GuilleGF/SecretSantaPHP/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/GuilleGF/SecretSantaPHP/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/GuilleGF/SecretSantaPHP/?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/5821ae0d89f0a91d55eb9600/badge.svg)](https://www.versioneye.com/user/projects/5821ae0d89f0a91d55eb9600)
 [![Latest Stable Version](https://poser.pugx.org/guillegf/secret-santa/v/stable)](https://packagist.org/packages/guillegf/secret-santa)
 [![Total Downloads](https://poser.pugx.org/guillegf/secret-santa/downloads)](https://packagist.org/packages/guillegf/secret-santa)
