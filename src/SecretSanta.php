@@ -53,7 +53,7 @@ class SecretSanta
     }
 
     /**
-     * @return PlayersCollection
+     * @return Player[]
      * @throws SecretSantaException
      */
     public function play()
@@ -61,15 +61,11 @@ class SecretSanta
         try {
             $this->combinePlayers();
 
-            return $this->players;
+            return $this->associatePlayers();
         } catch (SecretSantaException $exception) {
             throw  $exception;
         } catch (\Exception $exception) {
-            throw new SecretSantaException(
-                'Error during play, impossible to find secret santa, try again',
-                0,
-                $exception
-            );
+            throw new SecretSantaException('Error during play, impossible to find secret santa, try again');
         }
     }
 
@@ -84,27 +80,49 @@ class SecretSanta
 
         $retry = count($this->players) + $this->players->countExcludePlayers();
 
-        while (!$this->isValidCombination() && $retry > 0 ) {
-            $this->combination = [];
-            $secretPlayers = $this->players->shufflePlayers();
-            foreach ($this->players as $playerId => $player) {
-                foreach ($secretPlayers as $secretPlayer) {
-                    if ($player->id() != $secretPlayer->id() && !$this->players->areExclude($player, $secretPlayer)) {
-                        if (!in_array($secretPlayer->id(), $this->combination)) {
-                            $player->setSecretSanta($secretPlayer);
-                            $this->combination[$player->id()] = $secretPlayer->id();
-                            unset ($secretPlayers[$secretPlayer->id()]);
-                            break;
-                        }
-                    }
-                }
-            }
+        while (!$this->tryMatchSecretSantaPlayers() && $retry > 0 ) {
             $retry--;
         }
 
-        if (!$this->isValidCombination() && $retry <= 0) {
+        if (!$this->isValidCombination()) {
             throw new SecretSantaException("Not enough players to play");
         }
+    }
+
+    /**
+     * @return bool
+     */
+    private function tryMatchSecretSantaPlayers()
+    {
+        $this->combination = [];
+        $secretPlayers = $this->players->shufflePlayers();
+        foreach ($this->players->players() as $playerId => $player) {
+            foreach ($secretPlayers as $secretPlayer) {
+                if ($this->isValidSecretSanta($player, $secretPlayer)) {
+                    $this->combination[$player->id()] = $secretPlayer->id();
+                    unset ($secretPlayers[$secretPlayer->id()]);
+                    break;
+                }
+            }
+        }
+
+        return $this->isValidCombination();
+    }
+
+    /**
+     * @param Player $player
+     * @param Player $secretPlayer
+     * @return bool
+     */
+    private function isValidSecretSanta($player, $secretPlayer)
+    {
+        if ($player->id() != $secretPlayer->id() && !$this->players->areExclude($player, $secretPlayer)) {
+            if (!in_array($secretPlayer->id(), $this->combination)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -113,5 +131,16 @@ class SecretSanta
     private function isValidCombination()
     {
         return count($this->combination) > 0 && count($this->combination) == count($this->players);
+    }
+
+    private function associatePlayers()
+    {
+        foreach ($this->combination as $playerId => $secretSantaId) {
+            $this->players->player($playerId)->setSecretSanta(
+                $this->players->player($secretSantaId)
+            );
+        }
+
+        return $this->players->players();
     }
 }
