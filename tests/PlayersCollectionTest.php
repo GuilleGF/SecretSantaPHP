@@ -43,6 +43,30 @@ class PlayersCollectionTest extends PHPUnit_Framework_TestCase
         $playersCollection->addPlayer($player);
     }
 
+    /**
+     * @expectedException \SecretSanta\Exceptions\PlayersCollectionException
+     */
+    public function testDuplicatePlayerInCouple()
+    {
+        $expectedPlayer = Player::create('name', 'email@email.com');
+        $expectedCouple = Player::create('nameCouple', 'emailCouple@email.com');
+
+        $playersCollection = new PlayersCollection();
+        $playersCollection->addPlayer($expectedPlayer);
+        $playersCollection->addCouple($expectedPlayer, $expectedCouple);
+    }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\PlayersCollectionException
+     */
+    public function testSamePlayerInCouple()
+    {
+        $expectedPlayer = Player::create('name', 'email@email.com');
+
+        $playersCollection = new PlayersCollection();
+        $playersCollection->addCouple($expectedPlayer, $expectedPlayer);
+    }
+
     public function testAddCouple()
     {
         $expectedPlayer = Player::create('name', 'email@email.com');

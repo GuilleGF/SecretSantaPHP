@@ -8,7 +8,7 @@ use SecretSanta\Exceptions\PlayersCollectionException;
  * Class PlayersCollection
  * @package SecretSanta
  */
-class PlayersCollection implements \Iterator, \Countable
+class PlayersCollection implements \Countable
 {
     /** @var Player[] */
     private $players = [];
@@ -29,10 +29,15 @@ class PlayersCollection implements \Iterator, \Countable
     /**
      * @param Player $player
      * @param Player $couple
+     * @throws PlayersCollectionException
      */
     public function addCouple(Player $player, Player $couple)
     {
-        if (!$this->isDuplicatePlayer($player) && !$this->isDuplicatePlayer($couple)) {
+        if (!$this->areDifferentPlayers($player, $couple)) {
+            throw  new PlayersCollectionException('The couple can not be the same player');
+        }
+
+        if (!$this->isDuplicatePlayer($player) && !$this->isDuplicatePlayer($couple) ) {
             $this->players[$player->id()] = $player;
             $this->players[$couple->id()] = $couple;
 
@@ -105,6 +110,14 @@ class PlayersCollection implements \Iterator, \Countable
     /**
      * @return int
      */
+    public function count()
+    {
+        return count($this->players);
+    }
+
+    /**
+     * @return int
+     */
     public function countExcludePlayers()
     {
         return count($this->excludePlayers);
@@ -123,6 +136,16 @@ class PlayersCollection implements \Iterator, \Countable
         }
 
         return false;
+    }
+
+    /**
+     * @param Player $player
+     * @param Player $otherPlayer
+     * @return bool
+     */
+    private function areDifferentPlayers(Player $player, Player $otherPlayer)
+    {
+        return $player->id() != $otherPlayer->id();
     }
 
     /**
@@ -156,53 +179,5 @@ class PlayersCollection implements \Iterator, \Countable
         }
 
         return $shuffleList;
-    }
-
-    /**
-     * @return Player
-     */
-    public function current()
-    {
-        return current($this->players);
-    }
-
-    /**
-     * @return void Any returned value is ignored.
-     */
-    public function next()
-    {
-        next($this->players);
-    }
-
-    /**
-     * @return int
-     */
-    public function key()
-    {
-        return key($this->players);
-    }
-
-    /**
-     * @return bool
-     */
-    public function valid()
-    {
-        return ($this->current() !== false);
-    }
-
-    /**
-     * @return void Any returned value is ignored.
-     */
-    public function rewind()
-    {
-        reset($this->players);
-    }
-
-    /**
-     * @return int
-     */
-    public function count()
-    {
-        return count($this->players);
     }
 }
