@@ -240,4 +240,104 @@ class SecretSantaTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame(100 , count($combination));
     }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\SecretSantaException
+     */
+    public function testExclusivePlayersEmpty()
+    {
+        $secretSanta = new SecretSanta();
+        $secretSanta->addExclusivePlayers([]);
+    }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\SecretSantaException
+     */
+    public function testExclusivePlayersOnlyOnePlayer()
+    {
+        $secretSanta = new SecretSanta();
+        $secretSanta->addExclusivePlayers(
+            ['Player', 'player@email.com']
+        );
+    }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\SecretSantaException
+     */
+    public function testExclusivePlayersSamePlayer()
+    {
+        $secretSanta = new SecretSanta();
+        $secretSanta->addExclusivePlayers(
+            ['Player', 'player@email.com'],
+            ['Player', 'player@email.com']
+        );
+    }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\SecretSantaException
+     */
+    public function testExclusivePlayersInvalidPlayer()
+    {
+        $secretSanta = new SecretSanta();
+        $secretSanta->addExclusivePlayers(
+            ['', 'player@email.com'],
+            ['Player', 'player@email.com']
+        );
+    }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\SecretSantaException
+     */
+    public function testExclusivePlayersTwoPlayers()
+    {
+        $secretSanta = new SecretSanta();
+        $secretSanta->addExclusivePlayers(
+            ['Player', 'player@email.com'],
+            ['Player2', 'player2@email.com']
+        );
+
+        $secretSanta->play();
+    }
+
+    public function testFourExclusivePlayersAndFourSinglePlayers()
+    {
+        $secretSanta = new SecretSanta();
+        $secretSanta->addExclusivePlayers(
+            ['Player', 'player@email.com'],
+            ['Player2', 'player2@email.com'],
+            ['Player3', 'player3@email.com'],
+            ['Player4', 'player4@email.com']
+        );
+        $secretSanta->addPlayer('Player5', 'player5@email.com');
+        $secretSanta->addPlayer('Player6', 'player6@email.com');
+        $secretSanta->addPlayer('Player7', 'player7@email.com');
+        $secretSanta->addPlayer('Player8', 'player8@email.com');
+
+        $combination = $secretSanta->play();
+
+        $this->assertSame(8 , count($combination));
+    }
+
+    public function testFourExclusivePlayersAndFourSinglePlayersAndFourCouples()
+    {
+        $secretSanta = new SecretSanta();
+        $secretSanta->addExclusivePlayers(
+                ['Player', 'player@email.com'],
+                ['Player2', 'player2@email.com'],
+                ['Player3', 'player3@email.com'],
+                ['Player4', 'player4@email.com']
+            )
+            ->addPlayer('Player5', 'player5@email.com')
+            ->addPlayer('Player6', 'player6@email.com')
+            ->addPlayer('Player7', 'player7@email.com')
+            ->addPlayer('Player8', 'player8@email.com')
+            ->addCouple('Player9', 'player9@email.com', 'Couple9', 'couple9@email.com')
+            ->addCouple('Player10', 'player10@email.com', 'Couple10', 'couple10@email.com')
+            ->addCouple('Player11', 'player11@email.com', 'Couple11', 'couple11@email.com')
+            ->addCouple('Player12', 'player12@email.com', 'Couple12', 'couple12@email.com');
+
+        $combination = $secretSanta->play();
+
+        $this->assertSame(16 , count($combination));
+    }
 }

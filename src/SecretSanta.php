@@ -2,6 +2,7 @@
 
 namespace SecretSanta;
 
+use SecretSanta\Exceptions\PlayerException;
 use SecretSanta\Exceptions\SecretSantaException;
 
 /**
@@ -24,6 +25,7 @@ class SecretSanta
     }
 
     /**
+     * Add single player to the game
      * @param string $name
      * @param string $email
      * @return SecretSanta
@@ -36,6 +38,7 @@ class SecretSanta
     }
 
     /**
+     * Add two excluded players to the game
      * @param string $name
      * @param string $email
      * @param string $coupleName
@@ -53,6 +56,35 @@ class SecretSanta
     }
 
     /**
+     * Add multiple exclusive players to the game
+     * @param array $playersData
+     * @return $this
+     * @throws SecretSantaException
+     */
+    public function addExclusivePlayers(...$playersData)
+    {
+        if (count($playersData) < 2) {
+            throw new SecretSantaException('Number of players must be grater or equal than two.');
+        }
+
+        try {
+            $players = [];
+            foreach ($playersData as $playerData) {
+                list($name, $email) = array_values($playerData);
+                $players[] = Player::create($name, $email);
+            }
+
+            $this->players->addExclusivePlayers($players);
+        } catch (PlayerException $exception) {
+            throw new SecretSantaException('One o more players are invalids.', $exception);
+        } catch (\Exception $exception) {
+            throw new SecretSantaException('An error has occurred.', $exception);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Player[]
      * @throws SecretSantaException
      */
@@ -65,7 +97,7 @@ class SecretSanta
         } catch (SecretSantaException $exception) {
             throw  $exception;
         } catch (\Exception $exception) {
-            throw new SecretSantaException('Error during play, impossible to find secret santa, try again');
+            throw new SecretSantaException('Error during play, impossible to find secret santa, try again', $exception);
         }
     }
 
@@ -78,7 +110,7 @@ class SecretSanta
             throw new SecretSantaException("Not enough players to play, at least 4 players are required");
         }
 
-        $retry = count($this->players) + $this->players->countExcludePlayers();
+        $retry = count($this->players) + $this->players->countExclusivePlayers();
 
         while (!$this->tryMatchSecretSantaPlayers() && $retry > 0 ) {
             $retry--;
@@ -116,7 +148,7 @@ class SecretSanta
      */
     private function isValidSecretSanta($player, $secretPlayer)
     {
-        if ($player->id() != $secretPlayer->id() && !$this->players->areExclude($player, $secretPlayer)) {
+        if ($player->id() != $secretPlayer->id() && !$this->players->areExclusive($player, $secretPlayer)) {
             if (!in_array($secretPlayer->id(), $this->combination)) {
                 return true;
             }
