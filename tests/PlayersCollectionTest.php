@@ -96,7 +96,7 @@ class PlayersCollectionTest extends PHPUnit_Framework_TestCase
         $this->assertNotEquals(array_keys($playersCollection->players()), array_keys($shufflePlayers));
     }
 
-    public function testExcludePlayers()
+    public function testExclusivePlayers()
     {
         $expectedSinglePlayer = Player::create('nameSingle', 'emailSingle@email.com');
         $expectedPlayer = Player::create('name', 'email@email.com');
@@ -105,8 +105,59 @@ class PlayersCollectionTest extends PHPUnit_Framework_TestCase
         $playersCollection = new PlayersCollection();
         $playersCollection->addCouple($expectedPlayer, $expectedCouple);
 
-        $this->assertTrue($playersCollection->areExclude($expectedPlayer, $expectedCouple));
-        $this->assertFalse($playersCollection->areExclude($expectedSinglePlayer, $expectedPlayer));
-        $this->assertSame(2, $playersCollection->countExcludePlayers());
+        $this->assertTrue($playersCollection->areExclusive($expectedPlayer, $expectedCouple));
+        $this->assertFalse($playersCollection->areExclusive($expectedSinglePlayer, $expectedPlayer));
+        $this->assertSame(2, $playersCollection->countExclusivePlayers());
+    }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\PlayersCollectionException
+     */
+    public function AddExclusivePlayersEmpty()
+    {
+        $playersCollection = new PlayersCollection();
+        $playersCollection->addExclusivePlayers([]);
+    }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\PlayersCollectionException
+     */
+    public function AddExclusivePlayersOnlyOnePlayer()
+    {
+        $expectedPlayer = Player::create('name', 'email@email.com');
+
+        $playersCollection = new PlayersCollection();
+        $playersCollection->addExclusivePlayers(
+            [$expectedPlayer]
+        );
+    }
+
+    /**
+     * @expectedException \SecretSanta\Exceptions\PlayersCollectionException
+     */
+    public function AddExclusivePlayersOnlyTwoPlayer()
+    {
+        $expectedPlayer = Player::create('name', 'email@email.com');
+        $expectedPlayer2 = Player::create('name2', 'email2@email.com');
+
+        $playersCollection = new PlayersCollection();
+        $playersCollection->addExclusivePlayers([
+            $expectedPlayer,
+            $expectedPlayer2
+        ]);
+    }
+
+    public function AddExclusivePlayersThreePlayer()
+    {
+        $expectedPlayer = Player::create('name', 'email@email.com');
+        $expectedPlayer2 = Player::create('name2', 'email2@email.com');
+        $expectedPlayer3 = Player::create('name3', 'email3@email.com');
+
+        $playersCollection = new PlayersCollection();
+        $playersCollection->addExclusivePlayers([
+            $expectedPlayer,
+            $expectedPlayer2,
+            $expectedPlayer3
+        ]);
     }
 }

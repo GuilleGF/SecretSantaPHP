@@ -13,7 +13,7 @@ class PlayersCollection implements \Countable
     /** @var Player[] */
     private $players = [];
     /** @var array  */
-    private $excludePlayers = [];
+    private $exclusivePlayers = [];
 
     /**
      * @param Player $player
@@ -33,16 +33,35 @@ class PlayersCollection implements \Countable
      */
     public function addCouple(Player $player, Player $couple)
     {
-        if (!$this->areDifferentPlayers($player, $couple)) {
-            throw  new PlayersCollectionException('The couple can not be the same player');
+        if (!$this->areDifferentPlayers([$player, $couple])) {
+            throw new PlayersCollectionException('The couple can not be the same player');
         }
 
         if (!$this->isDuplicatePlayer($player) && !$this->isDuplicatePlayer($couple) ) {
             $this->players[$player->id()] = $player;
             $this->players[$couple->id()] = $couple;
 
-            $this->excludePlayers($player, $couple);
+            $this->exclusivePlayers([$player, $couple]);
         }
+    }
+
+    /**
+     * @param Player[] $players
+     * @throws PlayersCollectionException
+     */
+    public function addExclusivePlayers($players)
+    {
+        if (!$this->areDifferentPlayers($players)) {
+            throw new PlayersCollectionException('The players must be different');
+        }
+
+        foreach ($players as $player) {
+            if (!$this->isDuplicatePlayer($player)) {
+                $this->players[$player->id()] = $player;
+            }
+        }
+
+        $this->exclusivePlayers($players);
     }
 
     /**
@@ -77,16 +96,16 @@ class PlayersCollection implements \Countable
 
 
     /**
-     * @param Player[] ...$players
+     * @param Player[] $players
      */
-    private function excludePlayers(...$players)
+    private function exclusivePlayers($players)
     {
         foreach ($players as $mainPlayer) {
             foreach ($players as $player) {
                 if ($mainPlayer->id() == $player->id()){
                     continue;
                 }
-                $this->excludePlayers[$mainPlayer->id()][] = $player->id();
+                $this->exclusivePlayers[$mainPlayer->id()][] = $player->id();
             }
         }
     }
@@ -96,10 +115,10 @@ class PlayersCollection implements \Countable
      * @param Player $player2
      * @return bool
      */
-    public function areExclude(Player $player, Player $player2)
+    public function areExclusive(Player $player, Player $player2)
     {
-        if (array_key_exists($player->id(), $this->excludePlayers)
-            && in_array($player2->id(), $this->excludePlayers[$player->id()])
+        if (array_key_exists($player->id(), $this->exclusivePlayers)
+            && in_array($player2->id(), $this->exclusivePlayers[$player->id()])
         ) {
             return true;
         }
@@ -118,9 +137,9 @@ class PlayersCollection implements \Countable
     /**
      * @return int
      */
-    public function countExcludePlayers()
+    public function countExclusivePlayers()
     {
-        return count($this->excludePlayers);
+        return count($this->exclusivePlayers);
     }
 
 
@@ -139,13 +158,17 @@ class PlayersCollection implements \Countable
     }
 
     /**
-     * @param Player $player
-     * @param Player $otherPlayer
+     * @param Player[] $players
      * @return bool
      */
-    private function areDifferentPlayers(Player $player, Player $otherPlayer)
+    private function areDifferentPlayers($players)
     {
-        return $player->id() != $otherPlayer->id();
+        $uniqueIds = [];
+        foreach ($players as $player) {
+            $uniqueIds[] = $player->id();
+        }
+
+        return count($players) == count(array_unique($uniqueIds));
     }
 
     /**

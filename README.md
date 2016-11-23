@@ -9,7 +9,7 @@
 [![License](https://poser.pugx.org/guillegf/secret-santa/license)](https://packagist.org/packages/guillegf/secret-santa)
 
 * Repository: https://github.com/GuilleGF/SecretSantaPHP
-* Version: 1.1.1
+* Version: 1.2.0
 * License: MIT, see [LICENSE](LICENSE)
 
 ## Description
@@ -31,28 +31,52 @@ documentation.
 To add this dependency using the command, run the following from within your
 project directory:
 ```
-composer require guillegf/secret-santa "~1.1"
+composer require guillegf/secret-santa "~1.2"
 ```
 
 Alternatively, add the dependency directly to your `composer.json` file:
 ```json
 "require": {
-    "guillegf/secret-santa": "~1.1"
+    "guillegf/secret-santa": "~1.2"
 }
 ```
 ## Usage
 
+In this example in total we add 10 players, 2 singles players, 2 couples (exclusive) and 4 exclusive players.
+
+**The couples and exclusive players never match together.**
+
 ```php
 <?php
 $secretSanta = new SecretSanta();
-$secretSanta->addPlayer('Player', 'player@email.com')
+$secretSanta->addPlayer('Player1', 'player1@email.com')
   ->addPlayer('Player2', 'player2@email.com')
   ->addCouple('Player3', 'player3@email.com', 'Couple3', 'couple3@email.com')
-  ->addCouple('Player4', 'player4@email.com', 'Couple4', 'couple4@email.com');
+  ->addCouple('Player4', 'player4@email.com', 'Couple4', 'couple4@email.com')
+  ->addExclusivePlayers(
+      ['Player5', 'player5@email.com'],
+      ['Player6', 'player6@email.com'],
+      ['Player7', 'player7@email.com'],
+      ['Player8', 'player8@email.com']
+  );
   
 foreach ($secretSanta->play() as $player) {
      echo ("{$player->name()} ({$player->email()}): {$player->secretSanta()->name()}\n");
 }
+```
+The above example will output:
+
+```php
+Player1 (player1@email.com): Player5
+Player2 (player2@email.com): Player7
+Player3 (player3@email.com): Player2
+Couple3 (couple3@email.com): Player8
+Player4 (player4@email.com): Player3
+Couple4 (couple4@email.com): Player6
+Player5 (player5@email.com): Player4
+Player6 (player6@email.com): Player1
+Player7 (player7@email.com): Couple3
+Player8 (player8@email.com): Couple4
 ```
 
 ## License
