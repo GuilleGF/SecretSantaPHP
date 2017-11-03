@@ -30,7 +30,7 @@ class SecretSanta
      * @param string $email
      * @return SecretSanta
      */
-    public function addPlayer($name, $email)
+    public function addPlayer(string $name, string $email)
     {
         $this->players->addPlayer(Player::create($name, $email));
 
@@ -45,7 +45,7 @@ class SecretSanta
      * @param string $coupleEmail
      * @return SecretSanta
      */
-    public function addCouple($name, $email, $coupleName, $coupleEmail)
+    public function addCouple(string $name, string $email, string $coupleName, string $coupleEmail)
     {
         $this->players->addCouple(
             Player::create($name, $email),
@@ -146,7 +146,7 @@ class SecretSanta
      * @param Player $secretPlayer
      * @return bool
      */
-    private function isValidSecretSanta($player, $secretPlayer)
+    private function isValidSecretSanta(Player $player, Player $secretPlayer)
     {
         if ($player->id() != $secretPlayer->id() && !$this->players->areExclusive($player, $secretPlayer)) {
             if (!in_array($secretPlayer->id(), $this->combination)) {

@@ -18,14 +18,6 @@ class PlayerTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \SecretSanta\Exceptions\PlayerException
      */
-    public function testInvalidName()
-    {
-        Player::create([], 'email@email.com');
-    }
-
-    /**
-     * @expectedException \SecretSanta\Exceptions\PlayerException
-     */
     public function testInvalidEmail()
     {
         Player::create('name', 'email@');

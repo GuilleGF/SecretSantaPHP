@@ -49,7 +49,7 @@ class PlayersCollection implements \Countable
      * @param Player[] $players
      * @throws PlayersCollectionException
      */
-    public function addExclusivePlayers($players)
+    public function addExclusivePlayers(array $players)
     {
         if (!$this->areDifferentPlayers($players)) {
             throw new PlayersCollectionException('The players must be different');
@@ -85,7 +85,7 @@ class PlayersCollection implements \Countable
      * @return Player
      * @throws PlayersCollectionException
      */
-    public function player($id)
+    public function player(string $id)
     {
         if (!isset($this->players[$id])) {
             throw new PlayersCollectionException("Player {$id} not found");
@@ -161,7 +161,7 @@ class PlayersCollection implements \Countable
      * @param Player[] $players
      * @return bool
      */
-    private function areDifferentPlayers($players)
+    private function areDifferentPlayers(array $players)
     {
         $uniqueIds = [];
         foreach ($players as $player) {
@@ -175,7 +175,7 @@ class PlayersCollection implements \Countable
      * @param array $list
      * @return array
      */
-    private function shuffleAssoc($list)
+    private function shuffleAssoc(array $list)
     {
         if (!is_array($list)) return $list;
 
@@ -192,7 +192,7 @@ class PlayersCollection implements \Countable
      * @param array $list
      * @return array
      */
-    private function forceShuffle($list)
+    private function forceShuffle(array $list)
     {
         if (!is_array($list) || count($list) < 2) return $list;
 
