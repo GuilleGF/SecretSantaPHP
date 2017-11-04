@@ -52,6 +52,18 @@ class SecretSantaTest extends PHPUnit_Framework_TestCase
         $secretSanta->addCouple('Player', 'player@email.com', 'Couple', 'couple@email.com');
     }
 
+    public function testThreePlayers()
+    {
+        $secretSanta = new SecretSanta();
+        $secretSanta->addPlayer('Player', 'player@email.com');
+        $secretSanta->addPlayer('Player2', 'player2@email.com');
+        $secretSanta->addPlayer('Player3', 'player3@email.com');
+
+        $combination = $secretSanta->play();
+
+        $this->assertSame(3 , count($combination));
+    }
+
     public function testTwoCouples()
     {
         $secretSanta = new SecretSanta();

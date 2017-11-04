@@ -106,8 +106,8 @@ class SecretSanta
      */
     private function combinePlayers()
     {
-        if (count($this->players) < 4) {
-            throw new SecretSantaException("Not enough players to play, at least 4 players are required");
+        if (count($this->players) < 3) {
+            throw new SecretSantaException("Not enough players to play, at least 3 players are required");
         }
 
         $retry = count($this->players) + $this->players->countExclusivePlayers();

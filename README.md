@@ -9,7 +9,7 @@
 [![License](https://poser.pugx.org/guillegf/secret-santa/license)](https://packagist.org/packages/guillegf/secret-santa)
 
 * Repository: https://github.com/GuilleGF/SecretSantaPHP
-* Version: 1.2.0
+* Version: 1.3.0
 * License: MIT, see [LICENSE](LICENSE)
 
 ## Description
@@ -31,13 +31,13 @@ documentation.
 To add this dependency using the command, run the following from within your
 project directory:
 ```
-composer require guillegf/secret-santa "~1.2"
+composer require guillegf/secret-santa "~1.3"
 ```
 
 Alternatively, add the dependency directly to your `composer.json` file:
 ```json
 "require": {
-    "guillegf/secret-santa": "~1.2"
+    "guillegf/secret-santa": "~1.3"
 }
 ```
 ## Usage
