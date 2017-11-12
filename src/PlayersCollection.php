@@ -85,7 +85,7 @@ class PlayersCollection implements \Countable
      * @return Player
      * @throws PlayersCollectionException
      */
-    public function player(string $id)
+    public function player($id)
     {
         if (!isset($this->players[$id])) {
             throw new PlayersCollectionException("Player {$id} not found");
