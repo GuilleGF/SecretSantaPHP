@@ -30,7 +30,7 @@ class SecretSanta
      * @param string $email
      * @return SecretSanta
      */
-    public function addPlayer(string $name, string $email)
+    public function addPlayer($name, $email)
     {
         $this->players->addPlayer(Player::create($name, $email));
 
@@ -45,7 +45,7 @@ class SecretSanta
      * @param string $coupleEmail
      * @return SecretSanta
      */
-    public function addCouple(string $name, string $email, string $coupleName, string $coupleEmail)
+    public function addCouple($name, $email, $coupleName, $coupleEmail)
     {
         $this->players->addCouple(
             Player::create($name, $email),
