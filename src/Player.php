@@ -25,7 +25,7 @@ class Player
      * @param string $name
      * @param string $email
      */
-    private function __construct(string $name, string $email)
+    private function __construct($name, $email)
     {
         $this->setName($name);
         $this->setEmail($email);
@@ -36,7 +36,7 @@ class Player
      * @param string $email
      * @return Player
      */
-    public static function create(string $name, string $email)
+    public static function create($name, $email)
     {
         return new self($name, $email);
     }
@@ -98,10 +98,13 @@ class Player
      * @throws PlayerException
      * @return Player
      */
-    private function setName(string $name)
+    private function setName($name)
     {
+        if (!is_string($name)) {
+            throw new PlayerException("Name must be a string");
+        }
         if (strlen($name) < 3) {
-            throw new PlayerException("Name must have more than 3 characters");
+            throw new PlayerException("The name must have at least 2 letters");
         }
 
         $this->name = $name;
@@ -114,7 +117,7 @@ class Player
      * @throws PlayerException
      * @return Player
      */
-    private function setEmail(string $email)
+    private function setEmail($email)
     {
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
             throw new PlayerException("Email must be a valid format");
